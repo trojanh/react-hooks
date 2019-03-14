@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import './App.css';
+import "./App.css";
 
-
-const Todo = ({ text }) => <li>{text}</li>;
+const Todo = ({ text, index }) => <div>{index+1}.{text}</div>;
 
 const TodoAdd = ({ addTodos }) => {
   const [text, setText] = useState("");
-  const handleSubmit = event =>{
+  const handleSubmit = event => {
     event.preventDefault();
-    if(!text) return;
+    if (!text) return;
     addTodos(text);
-    setText('');
-  }
+    setText("");
+  };
   return (
     <form action="submit" onSubmit={handleSubmit}>
       <input
@@ -26,22 +25,23 @@ const TodoAdd = ({ addTodos }) => {
 const App = () => {
   const [todos, setTodos] = useState([{ text: "asdsada" }, { text: "asdsada" }]);
 
-  const addTodos = (text) =>{
-    setTodos([...todos, {text}])
-  }
-  const deleteTodos = (position) => {
-    setTodos(todos.filter((_, index) => index !== position))
-  }
+  const addTodos = text => {
+    setTodos([...todos, { text }]);
+  };
+  const deleteTodos = position => {
+    setTodos(todos.filter((_, index) => index !== position));
+  };
   return (
     <div className="App">
       <header className="App-header">
-        {todos.map(({text}, index) =>
+        {todos.map(({ text }, index) => (
           <div className="Todo-list" key={index}>
-            <Todo text={text}/>
-            <button className="button" onClick={() => deleteTodos(index)} >X</button>
-
+            <Todo text={text} index={index}/>
+            <button className="button" onClick={() => deleteTodos(index)}>
+              X
+            </button>
           </div>
-          )}
+        ))}
         <TodoAdd addTodos={addTodos} />
       </header>
     </div>

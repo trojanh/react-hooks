@@ -1,59 +1,51 @@
-import React, { Component } from 'react';
+import React, { useState } from "react";
 import './App.css';
 
-class App extends Component {
-  state = {
-    term: '',
-    items: [],
-  }
 
-  handleInput = ({target: {value}}) =>{
-    this.setState({
-      term: value
-    })
-  }
+const Todo = ({ text }) => <li>{text}</li>;
 
-  addTodo = (event) =>{
-    const {items, term} =this.state
+const TodoAdd = ({ addTodos }) => {
+  const [text, setText] = useState("");
+  const handleSubmit = event =>{
     event.preventDefault();
-    this.setState({
-      term: '',
-      items: [...items, term]
-    })
+    if(!text) return;
+    addTodos(text);
+    setText('');
   }
+  return (
+    <form action="submit" onSubmit={handleSubmit}>
+      <input
+        value={text}
+        type="text"
+        onChange={({ target: { value } }) => setText(value)}
+        placeholder="add todo"
+      />
+    </form>
+  );
+};
+const App = () => {
+  const [todos, setTodos] = useState([{ text: "asdsada" }, { text: "asdsada" }]);
 
-  deleteTodo = (index) =>{
-    console.log(index);
-
-    this.setState({
-      items: this.state.items.filter( (item, itemPosition) =>
-        index !== itemPosition
-      )
-    })
+  const addTodos = (text) =>{
+    setTodos([...todos, {text}])
   }
-
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-        <h1><u>Todos</u></h1>
-          {
-            this.state.items.map((item, index) =>
-                <li key={item+index}>
-                    {item}
-                  <button onClick={() => this.deleteTodo(index)}>X</button>
-                </li>
-
-              )
-          }
-          <form action="submit" onSubmit={this.addTodo}>
-            <input value={this.state.term} onChange={this.handleInput}/>
-            <button>Submit</button>
-          </form>
-        </header>
-      </div>
-    );
+  const deleteTodos = (position) => {
+    setTodos(todos.filter((_, index) => index !== position))
   }
-}
+  return (
+    <div className="App">
+      <header className="App-header">
+        {todos.map(({text}, index) =>
+          <div className="Todo-list" key={index}>
+            <Todo text={text}/>
+            <button className="button" onClick={() => deleteTodos(index)} >X</button>
+
+          </div>
+          )}
+        <TodoAdd addTodos={addTodos} />
+      </header>
+    </div>
+  );
+};
 
 export default App;
